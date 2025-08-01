@@ -2,11 +2,16 @@
 
 
 
-## Getting started
+## 1. Figure 3: Reduced deposition of compacted Amyloid plaques in aged Abi3KI/+; APPPS1 mice 
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- For Fig 3g plot "Quantification of the plaque intensity distribution in Methoxy-XO4–stained sections" run the script `01_1_Plaque_diffusivity_Int_Median_equal_bin_sizes_manuscript_adjusted.py` (data: *Plaque_diffusivity_combined_data.csv*)
+- For Fig 3h plot "Quantification of the Max plaque intensity" run the script `01_2_Strip_plot_Plaque_diffusivity_Int_Max.py` (data: *Plaque_diffusivity_combined_data.csv*)
 
 Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+
+## 2. Figure 4: Reduced microglial activation and clustering around amyloid plaques in aged Abi3KI/+; APPPS1 mice 
+
+- For Fig 4e plot "Scatter plot - plaque volume vs microglial intensity sum" run the script `02_Microglia_plaque_interaction_plaque_volume_manuscript.py` (data: *Microglia_associated_with_Plaques_plaques_Int_Sum_above1000um3.xlsx*)
 
 ## Add your files
 
