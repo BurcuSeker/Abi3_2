@@ -24,7 +24,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 - For Fig 7i plot...
 
-- For Fig 7j "Cerebral blood flow imaging using laser speckle contrast analysis during whisker stimulation" `01_project_definition.m, 02_find_datasets.m, 03_define_ROI_prepare.m, 04_define_ROI_manually.m, 05_average_epochs.m, 06_unblind_QC.m, 07_summarize_results.m`
+- For Fig 7j "Cerebral blood flow imaging using laser speckle contrast analysis during whisker stimulation" `01_project_definition.m, 02_find_datasets.m, 03_define_ROI_prepare.m, 04_define_ROI_manually.m, 05_average_epochs.m, 06_unblind_QC.m, 07_summarize_results.m`. These scripts were used for image analysis.
 ## Add your files
 
 - [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
