@@ -5,6 +5,7 @@
 ## 1. Figure 3: Reduced deposition of compacted Amyloid plaques in aged Abi3KI/+; APPPS1 mice 
 
 - For Fig 3g plot "Quantification of the plaque intensity distribution in Methoxy-XO4–stained sections" run the script `01_1_Plaque_diffusivity_Int_Median_equal_bin_sizes_manuscript_adjusted.py` (data: *Plaque_diffusivity_combined_data.csv*)
+
 - For Fig 3h plot "Quantification of the Max plaque intensity" run the script `01_2_Strip_plot_Plaque_diffusivity_Int_Max.py` (data: *Plaque_diffusivity_combined_data.csv*)
 
 Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
@@ -13,6 +14,17 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 - For Fig 4e plot "Scatter plot - plaque volume vs microglial intensity sum" run the script `02_Microglia_plaque_interaction_plaque_volume_manuscript.py` (data: *Microglia_associated_with_Plaques_plaques_Int_Sum_above1000um3.xlsx*)
 
+## 3. Figure : Impaired neurovascular response in Abi3KI/+x APPPS1 mice 
+
+- For Fig 7f plot...
+
+- For Fig 7g plot...
+
+- For Fig 7h plot...
+
+- For Fig 7i plot...
+
+- For Fig 7j "Cerebral blood flow imaging using laser speckle contrast analysis during whisker stimulation" `01_project_definition.m, 02_find_datasets.m, 03_define_ROI_prepare.m, 04_define_ROI_manually.m, 05_average_epochs.m, 06_unblind_QC.m, 07_summarize_results.m`
 ## Add your files
 
 - [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
