@@ -14,7 +14,7 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 - For Fig 4e plot "Scatter plot - plaque volume vs microglial intensity sum" run the script `02_Microglia_plaque_interaction_plaque_volume_manuscript.py` (data: *Microglia_associated_with_Plaques_plaques_Int_Sum_above1000um3.xlsx*)
 
-## 3. Figure : Impaired neurovascular response in Abi3KI/+x APPPS1 mice 
+## 3. Figure 7: Impaired neurovascular response in Abi3KI/+x APPPS1 mice 
 
 - For Fig 7f plot...
 
@@ -26,13 +26,13 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 - For Fig 7j "Cerebral blood flow imaging using laser speckle contrast analysis during whisker stimulation" `01_project_definition.m, 02_find_datasets.m, 03_define_ROI_prepare.m, 04_define_ROI_manually.m, 05_average_epochs.m, 06_unblind_QC.m, 07_summarize_results.m`. These scripts were used for image analysis and heatmap creations for individual subjects and for group average.
 
-## 4. ImageJ Macros for Preprocessing and Vessel ROI Extraction
+## 4. Figure 5c, d and e: Arteriole-Aβ Interactions (ImageJ Macros for Preprocessing and Vessel ROI Extraction)
 
-### 4.1 Deconvolution for Large Images
+### 4.1 Deconvolution Step
 
 This macro performs deconvolution using GPU support for large .tif files. It was used to improve image clarity before vessel-Aβ analysis.
 
-- **Macro file**: `Deconvolver_iGPU_JAVA21only_for_large_images.ijm`
+- **Macro file**: `Deconvolver.ijm`
 
 #### Usage
 1. Open Fiji (ImageJ).
