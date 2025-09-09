@@ -25,7 +25,48 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 - For Fig 7i plot...
 
 - For Fig 7j "Cerebral blood flow imaging using laser speckle contrast analysis during whisker stimulation" `01_project_definition.m, 02_find_datasets.m, 03_define_ROI_prepare.m, 04_define_ROI_manually.m, 05_average_epochs.m, 06_unblind_QC.m, 07_summarize_results.m`. These scripts were used for image analysis and heatmap creations for individual subjects and for group average.
-## Add your files
+
+## 4. ImageJ Macros for Preprocessing and Vessel ROI Extraction
+
+### 4.1 Deconvolution for Large Images
+
+This macro performs deconvolution using GPU support for large .tif files. It was used to improve image clarity before vessel-Aβ analysis.
+
+- **Macro file**: `Deconvolver_iGPU_JAVA21only_for_large_images.ijm`
+
+#### Usage
+1. Open Fiji (ImageJ).
+2. Drag your `.tif` image into Fiji.
+3. Go to `Plugins > Macros > Run...` and select the macro file.
+4. Wait for the deconvolution to complete. Results are saved automatically.
+
+---
+
+### 4.2 Bounding Box ROI Extraction for Arteriolar Analysis
+
+This macro identifies bounding boxes (with 5 μm padding) around user-defined ROIs, used to extract arterioles and exclude capillaries.
+
+- **Macro file**: `M12_Burcus_macro_boundingboxer.ijm`
+
+#### Key Features
+- Expands each ROI by 5 μm.
+- Crops and saves 3D regions around vessels for further analysis.
+- Automatically generates `.csv` results.
+
+#### Usage
+1. Open Fiji.
+2. Load a `.tif` image and open ROI Manager (`Analyze > Tools > ROI Manager`).
+3. Load or draw ROIs around arterioles.
+4. Go to `Plugins > Macros > Run...` and select the macro.
+5. Cropped vessel ROIs will be saved, and a `.csv` file will be generated.
+
+---
+
+### Notes
+- Each image was manually reviewed to ensure only arterioles (not capillaries) were selected.
+- `.csv` outputs from these macros were merged and analyzed using Python (`pandas`) and plotted in GraphPad Prism.
+
+
 
 - [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
 - [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
