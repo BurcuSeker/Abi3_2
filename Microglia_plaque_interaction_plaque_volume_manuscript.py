@@ -17,7 +17,7 @@ line_color_1 = "darkcyan"  # Regression line color for Group 1
 line_color_2 = "darkblue"  # Regression line color for Group 2
 
 # ✅ Load Data
-file_path = r'C:\Users\bseker\Desktop\Spyder_coding\Microglia_associated_with_Plaques_plaques_Int_Sum_above1000um3.xlsx'
+file_path = r'Microglia_associated_with_Plaques_plaques_Int_Sum_above1000um3.xlsx'
 data = pd.read_excel(file_path)
 
 # ✅ Clean Column Names
@@ -116,3 +116,4 @@ plt.text(1000, 3.2e9, f"{group_2_name}\nρ = {corr_2:.2f}, R² ≈ {r2_2:.2f}", 
 
 plt.tight_layout()
 plt.show()
+
