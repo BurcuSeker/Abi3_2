@@ -1,0 +1,20 @@
+
+Intensity Max Ch=4 Img=1
+ ==================== 
+Intensity Max,Unit,Category,Channel,Image,Time,ID,
+31031,,Surface,4,Image 1,1,0,
+65535,,Surface,4,Image 1,1,1,
+65535,,Surface,4,Image 1,1,2,
+30713,,Surface,4,Image 1,1,3,
+65535,,Surface,4,Image 1,1,4,
+63111,,Surface,4,Image 1,1,5,
+23923,,Surface,4,Image 1,1,6,
+65535,,Surface,4,Image 1,1,7,
+45920,,Surface,4,Image 1,1,8,
+48748,,Surface,4,Image 1,1,9,
+65535,,Surface,4,Image 1,1,10,
+40895,,Surface,4,Image 1,1,11,
+37900,,Surface,4,Image 1,1,12,
+44501,,Surface,4,Image 1,1,13,
+32413,,Surface,4,Image 1,1,14,
+65535,,Surface,4,Image 1,1,15,
