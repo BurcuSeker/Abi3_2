@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 31 16:00:10 2025
+Suppl Fig 5 — Plaque fragmentation: distribution of ALL plaque volumes
 
-@author: bseker
-"""
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 31 14:30:11 2025
-@author: bseker
-
-Modified to include: histogram + KDE plots and KDE-only overlay plots saved as SVG
-Updated: Replaced Cramér–von Mises test with Kolmogorov–Smirnov test
-          Customized axis labels, titles, and tick fonts
+Provenance:
+  Input Excel exported/collated for Suppl Fig 5:
+  data/Processed/SupplFig5_Plaque_fragmentation.xlsx
 """
 
 import seaborn as sns
@@ -20,24 +13,31 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import gaussian_kde, ks_2samp
 from itertools import combinations
+import os
 
-# ✅ Load the Excel file
-file_path = r"C:\Users\bseker\Desktop\Spyder_coding\Plaque_fragmentation\Volume_Summary_New_filtered_BS.xlsx"
-df = pd.read_excel(file_path, sheet_name='Sheet1')
+# =======================
+# Repo-relative I/O paths
+# =======================
+file_path = os.path.join("data", "Processed", "SupplFig5_Plaque_fragmentation.xlsx")
+plot_dir  = os.path.join("results", "figures", "scripts")
+os.makedirs(plot_dir, exist_ok=True)
 
-# ✅ Extract unique groups
+# ✅ Load the Excel file (keep your sheet selection)
+df = pd.read_excel(file_path, sheet_name="Sheet1")
+
+# ✅ Extract unique groups (kept)
 groups = df["Group Name"].unique()
 
-# ✅ Define selected groups
+# ✅ Define selected groups (kept: second then first)
 selected_groups = [groups[1], groups[0]]  # Adjust order if needed
 
-# ✅ Define zoom intervals and bin setup
+# ✅ Define zoom intervals and bin setup (kept)
 zoom_intervals = [(200, 1000), (200, 1000)]
 bin_size = 100
 bin_edges = np.arange(0, 80000 + bin_size, bin_size)
 bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
-# ✅ Storage for histogram and KDE data
+# ✅ Storage for histogram and KDE data (kept)
 global_counts = {}
 global_bin_edges = {}
 zoomed_kde_data = {}
@@ -50,10 +50,10 @@ for group in selected_groups:
     global_bin_edges[group] = bin_edges
     zoomed_kde_data[group] = []
 
-# ✅ Set colors
+# ✅ Colors (kept)
 hist_colors = ["#0F99B2", "#0000C0"]
 
-# ✅ Plot: Histogram + KDE subplot
+# ✅ Plot: Histogram + KDE subplot (kept)
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5), sharey=True)
 
 for i, (group, zoom_range) in enumerate(zip(selected_groups, zoom_intervals)):
@@ -73,7 +73,7 @@ for i, (group, zoom_range) in enumerate(zip(selected_groups, zoom_intervals)):
                     label=group)
 
         zoomed_data = df[(df["Group Name"] == group) &
-                         (df["Volume"] >= zoom_min) & 
+                         (df["Volume"] >= zoom_min) &
                          (df["Volume"] <= zoom_max)]["Volume"]
         zoomed_samples[group] = zoomed_data.to_numpy()
 
@@ -82,6 +82,7 @@ for i, (group, zoom_range) in enumerate(zip(selected_groups, zoom_intervals)):
             kde_x = np.linspace(zoom_min, zoom_max, 100)
             kde_y = kde(kde_x)
 
+            # normalize KDE area to match histogram area in the zoom window (kept)
             kde_area = np.trapz(kde_y, kde_x)
             hist_area = np.sum(counts[valid_indices] * bar_widths)
             kde_y *= hist_area / kde_area
@@ -90,21 +91,21 @@ for i, (group, zoom_range) in enumerate(zip(selected_groups, zoom_intervals)):
                          color=hist_colors[i % len(hist_colors)], linewidth=2,
                          label=f"{group} KDE")
 
-            zoomed_kde_data[group] = (kde_x, kde_y)
-
-    # ✅ Custom axis labels and font sizes
+    # ✅ Axis labels/titles/fonts (kept)
     axes[i].set_xlabel("Volume (µm³)", fontsize=20, fontweight='regular')
     axes[i].set_ylabel("Probability Density (µm⁻³)", fontsize=20)
     axes[i].set_title(f"Density of {group}", fontsize=20, fontweight='bold')
     axes[i].tick_params(axis='both', which='major', labelsize=16)
     axes[i].legend(loc="upper right", fontsize=14)
 
-# ✅ Save histogram + KDE plot
+# ✅ Save histogram + KDE plot (repo path)
+out_hist = os.path.join(plot_dir, "SupplFig5_volume_density_histograms.svg")
 plt.tight_layout()
-plt.savefig(r"C:\Users\bseker\Desktop\Spyder_coding\Plaque_fragmentation\volume_density_histograms.svg", format='svg')
+plt.savefig(out_hist, format='svg', dpi=300)
 plt.show()
+print(f"[OK] Saved: {out_hist}")
 
-# ✅ Statistical Test
+# ✅ Statistical Test (kept: KS on zoomed samples)
 print("\nKolmogorov–Smirnov test on zoomed data:")
 for g1, g2 in combinations(selected_groups, 2):
     x1 = zoomed_samples.get(g1, np.array([]))
@@ -115,7 +116,7 @@ for g1, g2 in combinations(selected_groups, 2):
     else:
         print(f"{g1} vs {g2}: Not enough data in the zoom range.")
 
-# ✅ Plot: KDE-Only Overlay
+# ✅ Plot: KDE-only overlay (kept)
 plt.figure(figsize=(8, 5))
 for i, group in enumerate(selected_groups):
     if len(zoomed_kde_data[group]) > 0:
@@ -124,7 +125,6 @@ for i, group in enumerate(selected_groups):
                  color=hist_colors[i % len(hist_colors)], linewidth=2,
                  label=f"{group} KDE")
 
-# ✅ Custom axis labels and font sizes for KDE-only plot
 plt.xlabel("Volume (µm³)", fontsize=20)
 plt.ylabel("Kernel Density Estimate (µm⁻³)", fontsize=20)
 plt.title("Zoomed-in KDE Curves for Selected Groups", fontsize=18, fontweight='bold')
@@ -132,7 +132,9 @@ plt.tick_params(axis='both', which='major', labelsize=16)
 plt.legend(loc="upper right", fontsize=14)
 plt.tight_layout()
 
-# ✅ Save KDE-only plot
-plt.savefig(r"C:\Users\bseker\Desktop\Spyder_coding\Plaque_fragmentation\volume_kde_overlay.svg", format='svg')
+# ✅ Save KDE-only plot (repo path)
+out_kde = os.path.join(plot_dir, "SupplFig5_volume_kde_overlay.svg")
+plt.savefig(out_kde, format='svg', dpi=300)
 plt.show()
-
+print(f"[OK] Saved: {out_kde}")
+print(f"[OK] Input file: {file_path}")

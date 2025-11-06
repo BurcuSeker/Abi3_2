@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 20 13:21:04 2025
+Fig 3I — Plaque diffusivity (Intensity Max): box + strip plot
 
-@author: bseker
+Provenance:
+  The input CSV is derived from the collated Excel
+  `data/Abi3_data_collate_main_figures.xlsx`, sheet
+  "Fig3I_Intensity_Max", and exported to:
+  `data/Processed/Fig3h_i_Plaque_diffusivity_combined_data.csv`.
 """
 
 # ✅ Import Libraries
@@ -17,7 +21,7 @@ from scipy.stats import ks_2samp, mannwhitneyu
 sns.reset_defaults()
 sns.set_style("whitegrid")  # Use whitegrid for better visibility
 
-# ✅ Define font settings for publication quality
+# ✅ Define font settings for publication quality (unchanged)
 font_settings = {
     "font.family": "Arial",
     "axes.titleweight": "regular",
@@ -31,26 +35,27 @@ font_settings = {
 }
 plt.rcParams.update(font_settings)
 
-# ✅ Ensure File Path and Load Data (if not already loaded)
-file_path = r"C:\Users\bseker\Desktop\Spyder_coding\Plaque_diffusivity_combined_data.csv"
+# ✅ Ensure File Path and Load Data (repo-relative paths)
+#    CSV exported from the collated Excel noted above
+file_path = os.path.join("data", "Processed", "Fig3h_i_Plaque_diffusivity_combined_data.csv")
 if 'df' not in globals():
     df = pd.read_csv(file_path)
 
-# ✅ Plot Saving Directory
-plot_dir = r"C:\Users\bseker\Desktop\Spyder_coding\Plots"
+# ✅ Plot Saving Directory (inside repo)
+plot_dir = os.path.join("results", "figures", "scripts")
 os.makedirs(plot_dir, exist_ok=True)
 
 # ✅ Define Custom RGB Colors for Groups
 group_1_color = (15/255, 153/255, 178/255)  # Group 1 Color (Cyan-like)
-group_2_color = (0/255, 0/255, 192/255)    # Group 2 Color (Deep Blue)
+group_2_color = (0/255, 0/255, 192/255)     # Group 2 Color (Deep Blue)
 
 # ✅ Extract Group Names from Data
-group_1_name = r"Abi3$^{+/+}$; APPPS1"  # Adjusted format for publication
+group_1_name = r"Abi3$^{+/+}$; APPPS1"   # Adjusted format for publication
 group_2_name = r"Abi3$^{KI/+}$; APPPS1"  # Adjusted format for publication
 
 # ✅ Data Subsets
-group_1_data = df[df["Subject Name"] == "APP/PS1_12m old"]["Intensity Max"]
-group_2_data = df[df["Subject Name"] == "Abi3(het)_APP/PS1_12m old"]["Intensity Max"]
+group_1_data = df[df["Subject Name"] == "Abi3+/+_APPPS1"]["Intensity Max"]
+group_2_data = df[df["Subject Name"] == "Abi3KI/+_APPPS1"]["Intensity Max"]
 
 # ✅ Print Information
 print("Unique Groups in 'Subject Name':", df["Subject Name"].unique())
@@ -71,15 +76,15 @@ def format_p_value(p):
     else:
         return f"{p:.4f}"
 
-# ✅ Combined Boxplot and Strip Plot
+# ✅ Combined Boxplot and Strip Plot (structure kept)
 plt.figure(figsize=(8, 5))
 
 # ✅ Boxplot
-ax = sns.boxplot(x="Subject Name", y="Intensity Max", data=df, 
+ax = sns.boxplot(x="Subject Name", y="Intensity Max", data=df,
                  palette=[group_1_color, group_2_color], width=0.6)
 
 # ✅ Strip Plot on Top of Boxplot
-sns.stripplot(x="Subject Name", y="Intensity Max", data=df, 
+sns.stripplot(x="Subject Name", y="Intensity Max", data=df,
               color="black", size=4, alpha=0.6, jitter=True)
 
 # ✅ Adjust x-axis labels with group names
@@ -109,15 +114,15 @@ ax.grid(False)
 # ✅ Set Background Color (Optional: White for Clean Look)
 ax.set_facecolor("white")
 
-
-
-
-# ✅ Adjust legend position
+# ✅ Adjust legend position (kept, though no handles were added)
 plt.legend(loc="upper right", frameon=False)
 
-# ✅ Save the Plot
+# ✅ Save the Plot (repo paths)
 plt.tight_layout()
-plt.savefig(os.path.join(plot_dir, "intensity_max_boxplot_strip_with_stats.svg"), format="svg", dpi=300)
+plt.savefig(os.path.join(plot_dir, "Fig3I_intensity_max_boxplot_strip_with_stats.svg"),
+            format="svg", dpi=300)
+plt.savefig(os.path.join(plot_dir, "Fig3I_intensity_max_boxplot_strip_with_stats.png"),
+            format="png", dpi=300)
 plt.show()
 
 # ✅ Final Confirmation
