@@ -1,0 +1,15 @@
+# MATLAB files
+*.asv
+*.fig
+*.bak
+*.tmp
+*.mat
+
+# macOS
+.DS_Store
+
+# Output folders
+results/
+*.xlsx
+*.pdf
+*.png
