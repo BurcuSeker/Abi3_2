@@ -1,200 +1,178 @@
-# Vessel Diameter Analysis for Whisker Stimulation Experiments
+Neuronal Activity Analysis – Suite2p + Evoked Response Pipeline
+================================================================
 
-This folder contains the full workflow for quantifying **cerebral vessel diameter changes** during whisker stimulation.  
-The analysis is performed in **two sequential steps**:
+This folder contains the complete analysis pipeline used to quantify
+**neuronal calcium activity during whisker stimulation**, consisting of:
 
-1. **Vessel diameter extraction in Fiji/ImageJ using VasoMetrics**  
-2. **Trial-based dilation analysis using Python**  
-   (baseline normalization, % dilation, time-to-peak, time-to-10%, summary plots)
+1. **ROI extraction and ?F/F computation using Suite2p**
+2. **Stimulus-evoked response analysis using Python**
+   (`Fig7_Neuronal_activity_analysis.py`)
 
-> **Important:**  
-> Raw vasomotion videos **must always be processed through VasoMetrics first**  
-> before running the Python analysis script in this folder.
+This README provides a clean, step-by-step guide to running the pipeline
+from raw two-photon calcium imaging movies to final population- and
+group-level calcium response metrics.
 
-Example raw vessel videos are available on OSF:  
-🔗 **https://doi.org/10.17605/OSF.IO/SYZGA**
+----------------------------------------------------------------------
+1. Overview of the Workflow
+----------------------------------------------------------------------
 
----
+Input:
+- Two-photon calcium imaging movies (e.g., GCaMP-based recordings)
 
-# 1. Workflow Overview
+Step 1 — Suite2p (cell detection & ?F/F extraction):
+- Motion correction (rigid + non-rigid)
+- Automated neuron/ROI detection
+- Neuropil subtraction
+- Extraction of fluorescence traces per neuron
+- ?F/F0 calculation
+- Optional spike deconvolution
 
-### **Input**
-- Time-series imaging of cortical vessels (e.g., two-photon line/area scans, widefield imaging)
-- TIFF stacks or ImageJ-readable formats
+Output of Suite2p (for this project):
+- Excel file `ABI3.xlsx` containing per-cell ?F/F0 traces
 
-### **Step 1 — Fiji/ImageJ (VasoMetrics)**
-- User draws one **centerline (“through-line”)** along the vessel  
-- VasoMetrics generates **multiple perpendicular cross-lines**  
-- For each frame and cross-line, VasoMetrics computes **vessel diameter using FWHM**  
-- Exports a **Results table** containing:
-  - `Frame`
-  - `Mean` (mean diameter across all cross-lines)
-  - `SD`
-  - `Line 1 … Line N` (diameter per cross-line)
+Step 2 — Python Script (evoked whisker response analysis):
+- Loads ?F/F0 traces from Excel
+- Segments traces around stimulation epochs
+- Identifies responsive cells
+- Computes trial-averaged ?F/F0 responses
+- Produces population-level summary plots
+- Performs baseline vs peak statistics
 
-Export each VasoMetrics output table as **CSV**.
+----------------------------------------------------------------------
+2. Software Requirements
+----------------------------------------------------------------------
 
-### **Step 2 — Python Script (whisker stimulation analysis)**
+2.1 Suite2p
+- Suite2p (Python package)
+- Documentation: https://suite2p.readthedocs.io
+- Reference: Pachitariu et al., *bioRxiv*, 2017
 
-Filename:
-```
-051224_WorkingWhiskerStimScriptWithPictures_WithAverageTimetoDilation_timeto10-.py
-```
+Used here for:
+- Registration
+- ROI detection
+- Neuropil subtraction
+- ?F/F computation
 
-The Python script performs:
-- Smoothing and filtering
-- Baseline normalization (% dilation)
-- Automatic epoch segmentation (whisker stimulation)
-- Computation of:
-  - Median % dilation  
-  - Maximum % dilation  
-  - Time to peak  
-  - Mean time to 10% of max dilation  
-- Optional automated ROI snapshot export (baseline, post-baseline, max dilation)
-- Outputs:
-  - Excel files with quantitative metrics
-  - PNG plots of normalized diameter traces and summary statistics
-  - Optional extracted JPEG/TIFF images via Fiji/Jython
+2.2 Python environment (for Fig7_Neuronal_activity_analysis.py)
+Python = 3.8 with:
 
----
+    numpy
+    pandas
+    matplotlib
+    seaborn
+    scipy
 
-# 2. Requirements
+Install with:
 
-## **2.1 Fiji / ImageJ Requirements**
-- ImageJ or **Fiji** (recommended)
-- **VasoMetrics.ijm** macro (included here)
+    pip install numpy pandas matplotlib seaborn scipy
 
-### Citation (VasoMetrics)
-If you use VasoMetrics, please cite:
+----------------------------------------------------------------------
+3. Step 1 — Suite2p Processing
+----------------------------------------------------------------------
 
-**McDowell KP, Berthiaume AA, Tieu T, Hartmann DA, Shih AY.**  
-*VasoMetrics: unbiased spatiotemporal analysis of microvascular diameter in multiphoton imaging applications.*  
-Quantitative Imaging in Medicine and Surgery (2021).  
-https://doi.org/10.21037/qims-20-920
+3.1 Input to Suite2p
+Raw two-photon calcium imaging movies, organized according to Suite2p's
+recommended folder structure.
 
-### Recommended setup
-- Set the imaging scale via **Analyze → Set Scale…**  
-  Ensures VasoMetrics exports diameters in µm.
+3.2 What Suite2p does
+Per dataset:
+- Registers movies
+- Detects ROIs (cells)
+- Extracts raw and neuropil-corrected fluorescence
+- Computes ?F/F0 per cell
 
----
+3.3 Exporting data for this project
+Export per-cell ?F/F0 traces into Excel:
 
-## **2.2 Python Requirements**
-- Python 3.x
+    ABI3.xlsx
 
-Required packages:
-```
-pandas
-numpy
-scipy
-matplotlib
-seaborn
-openpyxl
-```
+Expected format:
+- Column 0: frame index or time (ignored by script)
+- Columns 1..N: ?F/F0 traces per cell
 
-Install:
-```
-pip install pandas numpy scipy matplotlib seaborn openpyxl
-```
+Example Suite2p output tables are provided on OSF (below).
 
-### Optional (for ROI image extraction)
-- Fiji installed
-- Jython 2.7.x
-- Valid paths to `ij.jar` and BioFormats inside the script (check script header)
+----------------------------------------------------------------------
+4. Step 2 — Evoked Response Analysis (Python)
+----------------------------------------------------------------------
 
----
+Script:
+    Fig7_Neuronal_activity_analysis.py
 
-# 3. Step-by-Step Instructions
+4.1 Inputs and settings (at top of script):
 
-## **3.1 Step 1 — Extract Diameters with VasoMetrics (in Fiji)**
+    file_path = r'...ABI3.xlsx'
+    frame_rate = 28  # Hz
+    stim_ranges = [(5000, 5500), (8000, 8500), (11000, 11500), (14000, 14500)] (can differ subject to subject)
 
-1. Open your raw vessel TIFF stack in **Fiji**  
-2. Set the image scale (**Analyze → Set Scale…**)  
-3. Load `VasoMetrics.ijm` via **Plugins → Macros → Run…**  
-4. Draw a **centerline** along the vessel  
-5. When prompted, set:
-   - number of cross-lines  
-   - spacing  
-   - length  
-6. Run VasoMetrics  
-7. Export the **Results** table as CSV  
-   Example:
-   ```
-   mouse01_vessel1_VasoMetrics.csv
-   ```
+    pre_stim_sec = 10
+    post_stim_sec = 10
+    baseline_window_sec = 2
+    sd_threshold = 2
 
-Repeat for each vessel and each mouse.
+Settings to adjust:
+- file_path: path to ABI3.xlsx
+- frame_rate: imaging framerate
+- stim_ranges: (start_frame, end_frame) for each whisker stimulation epoch
+- pre/post windows
+- baseline length
+- SD threshold for responsiveness
 
----
+4.2 Per-cell analysis
+For each cell & each stimulation epoch:
+- Extracts time window around stimulus
+- Computes baseline (pre-stimulation)
+- Computes ?F/F0 for the window
+- Determines responsiveness based on SD threshold
+- Stores:
+  - full ?F/F0 trace
+  - baseline
+  - peak response
 
-## **3.2 Step 2 — Analyze Dilation (Python)**
+4.3 Population-level averaging
+Across all responsive trials & cells:
+- Aligns traces to stimulus onset
+- Computes mean ?F/F0 and SEM
+- Generates:
+  - Mean ± SEM time-course plot
+  - Baseline vs peak panel
+  - Histograms of baseline vs peak
 
-### Run the script:
-```
-python 051224_WorkingWhiskerStimScriptWithPictures_WithAverageTimetoDilation_timeto10-.py
-```
+4.4 Statistics
+Computes:
+- Shapiro–Wilk tests
+- Paired t-test (baseline vs peak)
+- Cohen’s d
+- Wilcoxon signed-rank
 
-### The GUI will ask for:
-- CSV file (VasoMetrics export)  
-- Frame interval / frame rate  
-- Smoothing window  
-- Baseline window  
-- Stimulation window  
-- Filtering options  
+Outputs:
+- Mean ± SD baseline and peak values
+- p-values & significance stars
+- Number of responsive cells & trials
 
-### The script outputs:
-- **Excel** file with all computed metrics  
-- **PNG** plots of diameter traces and summary graphs  
-- (Optional) **ROI images** extracted in Fiji (baseline, post-baseline, peak dilation)
+----------------------------------------------------------------------
+5. Group-Level Comparison Plots
+----------------------------------------------------------------------
 
----
+Using:
+    Analysis bulk response.xlsx
 
-# 4. Outputs
+The script generates:
+- Paired baseline vs stimulation response (one cohort)
+- Mean ?F/F0 traces ± SEM for multiple cohorts
+- Stimulus timing shading
 
-You will obtain:
+Used for manuscript neuronal comparisons.
 
-### **Excel Files**
-- Baseline values
-- Peak dilation
-- % change
-- Time-to-peak
-- Time-to-10% (mean across trials)
-- Per-frame normalized diameter traces
+----------------------------------------------------------------------
+6. Example Data (OSF)
+----------------------------------------------------------------------
 
-### **Figures (PNG)**
-- Normalized trace plot
-- Summary dilations
-- Per-trial analysis plots
+Sample Suite2p output tables and example ?F/F0 traces are available at:
 
-### **Optional ROI Images**
-- Baseline TIFF/JPEG  
-- Early dilation  
-- Max dilation timepoint  
+OSF DOI:
+https://doi.org/10.17605/OSF.IO/SYZGA
 
----
-
-# 5. OSF Example Data
-
-Example raw vasculature TIFF videos and example VasoMetrics output tables are available at:
-
-🔗 **OSF Dataset:** https://doi.org/10.17605/OSF.IO/SYZGA
-
-These data allow users to reproduce the full workflow (Fiji → VasoMetrics → Python).
-
----
-
-# 6. Citing This Pipeline
-
-When using this analysis pipeline, please cite:
-
-### **VasoMetrics (for diameter extraction)**  
-McDowell KP et al., 2021 (see Section 2.1)
-
-### **This repository**  
-If you use the whisker dilation Python analysis (this folder),  
-please cite the repository and acknowledge:
-
-**“Vessel-diameter whisker stimulation analysis script developed as part of the Abi3 project.”**
-
----
-
-# END OF DOCUMENT
+----------------------------------------------------------------------
+END OF DOCUMENT
+----------------------------------------------------------------------
