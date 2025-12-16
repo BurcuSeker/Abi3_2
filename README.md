@@ -1,7 +1,5 @@
 # Abi3 manuscript
 
-# Abi3 manuscript
-
 This repository contains analysis code used for the Abi3 manuscript,
 including image-derived quantifications, data aggregation, and
 downstream analyses for main and supplementary figures.
